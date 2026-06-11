@@ -30,15 +30,15 @@ st.markdown("""
         max-width: 520px;
     }
 
-    /* Logo */
+    /* Logo — fora do card, centralizada e maior */
     .logo-wrapper {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1.75rem;
     }
 
     .logo-wrapper img {
-        max-height: 72px;
-        max-width: 220px;
+        max-height: 100px;
+        max-width: 280px;
         object-fit: contain;
     }
 
@@ -50,13 +50,6 @@ st.markdown("""
         padding: 2.5rem 2.5rem 2rem;
         text-align: center;
         box-shadow: 0 6px 28px rgba(34, 139, 74, 0.08);
-    }
-
-    /* Ícone */
-    .file-icon {
-        font-size: 3.5rem;
-        line-height: 1;
-        margin-bottom: 1rem;
     }
 
     /* Título */
@@ -124,12 +117,12 @@ st.markdown("""
 # ▸ CONFIGURAÇÃO — edite aqui
 # ══════════════════════════════════════════════════════════════════════════════
 
-ARQUIVO_PATH = "app_tellus.apk"
-ARQUIVO_NOME = "app_tellus.apk"
-TITULO       = "Baixar App"
-DESCRICAO    = "Clique no botão abaixo para baixar o aplicativo."
-ICONE        = "📱"
-MIME_TYPE    = "application/vnd.android.package-archive"
+ARQUIVO_PATH = "app_tellus.apk" 
+ARQUIVO_NOME = "app_tellus.apk" 
+TITULO       = "Baixar App" 
+DESCRICAO    = "Clique no botão abaixo para baixar o aplicativo." 
+ICONE        = "📱" 
+MIME_TYPE    = "application/vnd.android.package-archive" 
 LOGO_PATH    = "logo.png"
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -155,18 +148,15 @@ def logo_base64(path: str) -> str | None:
     return f"data:{mime};base64,{data}"
 
 
-# ── Logo ─────────────────────────────────────────────────────────────────────
+# ── Card + Logo (tudo em HTML puro para evitar elementos extras do Streamlit) ─
 logo_uri = logo_base64(LOGO_PATH)
-if logo_uri:
-    st.markdown(
-        f'<div class="logo-wrapper"><img src="{logo_uri}" alt="Logo"></div>',
-        unsafe_allow_html=True,
-    )
+logo_html = f'<div class="logo-wrapper"><img src="{logo_uri}" alt="Logo"></div>' if logo_uri else ""
 
-# ── Card ─────────────────────────────────────────────────────────────────────
-st.markdown('<div class="download-card">', unsafe_allow_html=True)
-st.markdown(f'<div class="file-icon">{ICONE}</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="file-title">{TITULO}</div>', unsafe_allow_html=True)
+st.markdown(f"""
+{logo_html}
+<div class="download-card">
+<div class="file-title">{TITULO}</div>
+""", unsafe_allow_html=True)
 
 if os.path.exists(ARQUIVO_PATH):
     tamanho  = os.path.getsize(ARQUIVO_PATH)
