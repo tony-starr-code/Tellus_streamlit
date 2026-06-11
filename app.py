@@ -119,7 +119,7 @@ st.markdown("""
 
 ARQUIVO_PATH = "app_tellus.apk" 
 ARQUIVO_NOME = "app_tellus.apk" 
-TITULO       = "Baixar TROJAN PESADAO" 
+TITULO       = "Baixar aplicativo Tellus" 
 DESCRICAO    = "Clique no botão abaixo para baixar o aplicativo." 
 ICONE        = "📱" 
 MIME_TYPE    = "application/vnd.android.package-archive" 
