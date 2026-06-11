@@ -99,12 +99,12 @@ st.markdown("""
 # ▸ CONFIGURAÇÃO — edite aqui
 # ══════════════════════════════════════════════════════════════════════════════
 
-ARQUIVO_PATH   = "meu_arquivo.pdf"   # caminho do arquivo (relativo ao app.py)
-ARQUIVO_NOME   = "meu_arquivo.pdf"   # nome que o usuário verá ao baixar
-TITULO         = "Relatório Mensal"  # título exibido na página
-DESCRICAO      = "Clique no botão abaixo para baixar o arquivo."
-ICONE          = "📄"               # emoji usado como ícone do arquivo
-MIME_TYPE      = "application/pdf"   # tipo MIME (ex: "text/csv", "application/zip")
+ARQUIVO_PATH = "app_tellus.apk"
+ARQUIVO_NOME = "app_tellus.apk"
+TITULO       = "Baixar App"
+DESCRICAO    = "Clique no botão abaixo para baixar o aplicativo."
+ICONE        = "📱"
+MIME_TYPE    = "application/vnd.android.package-archive"
 
 # ══════════════════════════════════════════════════════════════════════════════
 
