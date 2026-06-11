@@ -1,81 +1,106 @@
 import streamlit as st
 import os
+import base64
 
 # ── Configuração da página ──────────────────────────────────────────────────
 st.set_page_config(
     page_title="Download",
-    page_icon="⬇️",
+    page_icon="📱",
     layout="centered",
 )
 
 # ── CSS personalizado ───────────────────────────────────────────────────────
 st.markdown("""
 <style>
-    /* Importa fonte moderna */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
+        background-color: #f5faf6 !important;
     }
 
-    /* Remove padding padrão do Streamlit */
+    /* Fundo da página */
+    .stApp {
+        background-color: #f5faf6;
+    }
+
     .block-container {
-        padding-top: 4rem;
+        padding-top: 3rem;
         padding-bottom: 2rem;
-        max-width: 560px;
+        max-width: 520px;
     }
 
-    /* Card central */
+    /* Logo */
+    .logo-wrapper {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .logo-wrapper img {
+        max-height: 72px;
+        max-width: 220px;
+        object-fit: contain;
+    }
+
+    /* Card */
     .download-card {
         background: #ffffff;
-        border: 1px solid #e8e8e8;
-        border-radius: 16px;
-        padding: 3rem 2.5rem;
+        border: 1px solid #d4eadb;
+        border-radius: 18px;
+        padding: 2.5rem 2.5rem 2rem;
         text-align: center;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 6px 28px rgba(34, 139, 74, 0.08);
     }
 
-    /* Ícone grande */
+    /* Ícone */
     .file-icon {
-        font-size: 4rem;
+        font-size: 3.5rem;
         line-height: 1;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
     }
 
     /* Título */
     .file-title {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         font-weight: 600;
-        color: #111111;
-        margin-bottom: 0.5rem;
+        color: #1a3d27;
+        margin-bottom: 0.4rem;
     }
 
-    /* Metadados (tamanho, tipo) */
+    /* Metadados */
     .file-meta {
-        font-size: 0.875rem;
-        color: #888888;
-        margin-bottom: 2rem;
+        font-size: 0.85rem;
+        color: #6a9e7a;
+        margin-bottom: 1.5rem;
         letter-spacing: 0.01em;
+    }
+
+    /* Descrição */
+    .file-desc {
+        color: #4a6655;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
     }
 
     /* Divider */
     .divider {
         border: none;
-        border-top: 1px solid #f0f0f0;
-        margin: 1.5rem 0;
+        border-top: 1px solid #e8f3ec;
+        margin: 1.25rem 0;
     }
 
     /* Rodapé */
     .footer-note {
-        font-size: 0.78rem;
-        color: #bbbbbb;
-        margin-top: 2rem;
+        font-size: 0.76rem;
+        color: #a8c4b0;
+        margin-top: 1.75rem;
         text-align: center;
     }
 
-    /* Botão de download do Streamlit — sobrescreve estilo padrão */
+    /* Botão verde */
     .stDownloadButton > button {
-        background: #111111 !important;
+        background: #228b4a !important;
         color: #ffffff !important;
         border: none !important;
         border-radius: 10px !important;
@@ -89,7 +114,7 @@ st.markdown("""
     }
 
     .stDownloadButton > button:hover {
-        background: #333333 !important;
+        background: #1a6e3a !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -105,12 +130,12 @@ TITULO       = "Baixar App"
 DESCRICAO    = "Clique no botão abaixo para baixar o aplicativo."
 ICONE        = "📱"
 MIME_TYPE    = "application/vnd.android.package-archive"
+LOGO_PATH    = "logo.png"
 
 # ══════════════════════════════════════════════════════════════════════════════
 
 
 def formatar_tamanho(bytes_: int) -> str:
-    """Converte bytes em string legível (KB / MB)."""
     if bytes_ < 1024:
         return f"{bytes_} B"
     elif bytes_ < 1024 ** 2:
@@ -119,38 +144,51 @@ def formatar_tamanho(bytes_: int) -> str:
         return f"{bytes_ / 1024 ** 2:.1f} MB"
 
 
-# ── Layout ──────────────────────────────────────────────────────────────────
-st.markdown('<div class="download-card">', unsafe_allow_html=True)
+def logo_base64(path: str) -> str | None:
+    """Lê a logo e retorna como data URI base64."""
+    if not path or not os.path.exists(path):
+        return None
+    ext = os.path.splitext(path)[1].lower().lstrip(".")
+    mime = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "svg": "image/svg+xml"}.get(ext, "image/*")
+    with open(path, "rb") as f:
+        data = base64.b64encode(f.read()).decode()
+    return f"data:{mime};base64,{data}"
 
+
+# ── Logo ─────────────────────────────────────────────────────────────────────
+logo_uri = logo_base64(LOGO_PATH)
+if logo_uri:
+    st.markdown(
+        f'<div class="logo-wrapper"><img src="{logo_uri}" alt="Logo"></div>',
+        unsafe_allow_html=True,
+    )
+
+# ── Card ─────────────────────────────────────────────────────────────────────
+st.markdown('<div class="download-card">', unsafe_allow_html=True)
 st.markdown(f'<div class="file-icon">{ICONE}</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="file-title">{TITULO}</div>', unsafe_allow_html=True)
 
-# Verifica se o arquivo existe e exibe metadados
 if os.path.exists(ARQUIVO_PATH):
-    tamanho = os.path.getsize(ARQUIVO_PATH)
+    tamanho  = os.path.getsize(ARQUIVO_PATH)
     extensao = os.path.splitext(ARQUIVO_NOME)[1].upper().lstrip(".")
     st.markdown(
         f'<div class="file-meta">{extensao} &nbsp;·&nbsp; {formatar_tamanho(tamanho)}</div>',
         unsafe_allow_html=True,
     )
-
-    st.markdown(f'<p style="color:#555;font-size:0.9rem;margin-bottom:1.5rem;">{DESCRICAO}</p>', unsafe_allow_html=True)
-
+    st.markdown(f'<p class="file-desc">{DESCRICAO}</p>', unsafe_allow_html=True)
     st.markdown('<hr class="divider">', unsafe_allow_html=True)
 
     with open(ARQUIVO_PATH, "rb") as f:
         st.download_button(
-            label="⬇️  Baixar arquivo",
+            label="⬇️  Baixar aplicativo",
             data=f,
             file_name=ARQUIVO_NOME,
             mime=MIME_TYPE,
         )
-
 else:
-    # Arquivo não encontrado — exibe aviso claro
     st.markdown(
-        '<div class="file-meta" style="color:#e05555;">Arquivo não encontrado.<br>'
-        f'Verifique se <code>{ARQUIVO_PATH}</code> existe na mesma pasta do app.</div>',
+        '<div class="file-meta" style="color:#c0392b;">Arquivo não encontrado.<br>'
+        f'Coloque <code>{ARQUIVO_PATH}</code> na mesma pasta do app.</div>',
         unsafe_allow_html=True,
     )
 
